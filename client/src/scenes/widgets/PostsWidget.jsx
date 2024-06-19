@@ -10,21 +10,41 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   const token = useSelector((state) => state.token);
 
   const getPosts = useCallback(async () => {
-    const response = await fetch(`${API_BASE_URL}/posts`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    dispatch(setPosts({ posts: data }));
+    try {
+      const response = await fetch(`${API_BASE_URL}/posts`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        // Handle HTTP errors
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      dispatch(setPosts({ posts: data }));
+    } catch (error) {
+      console.error("Failed to fetch posts:", error);
+    }
   }, [dispatch, token]);
 
   const getUserPosts = useCallback(async () => {
-    const response = await fetch(`${API_BASE_URL}/posts/${userId}/posts`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    dispatch(setPosts({ posts: data }));
+    try {
+      const response = await fetch(`${API_BASE_URL}/posts/${userId}/posts`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        // Handle HTTP errors
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      dispatch(setPosts({ posts: data }));
+    } catch (error) {
+      console.error("Failed to fetch user posts:", error);
+    }
   }, [dispatch, userId, token]);
 
   useEffect(() => {
